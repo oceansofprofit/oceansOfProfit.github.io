@@ -246,7 +246,7 @@
 
       try {
         // First attempt
-        res = await sendWithBot(telegramUrl+currentBot, chatId, headline, message + i, file);
+        res = await sendWithBot(telegramUrl+currentBot, chatId, headline, message, file);
         data = await res.json();
 
         if (!res.ok || !data.ok) {
@@ -266,7 +266,7 @@
 
         // Retry with next bot
         try {
-          res = await sendWithBot(telegramUrl+currentBot, chatId, headline, message + i, file);
+          res = await sendWithBot(telegramUrl+currentBot, chatId, headline, message, file);
           data = await res.json();
           if (res.ok && data.ok) {
             countPass++;
