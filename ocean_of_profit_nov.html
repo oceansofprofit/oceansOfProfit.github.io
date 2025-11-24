@@ -302,7 +302,7 @@
       const chatId = options[i];
       document.getElementById("status").innerText = `Sending Message in group: ${i + 1}`;
 
-      let currentBot = BOT_TOKENS[i%2];
+      let currentBot = BOT_TOKENS[botIndex];
       let res, data;
 
       try {
@@ -339,7 +339,7 @@
         }
       }
 
-      // batchCounter++;
+      batchCounter++;
 
       if (batchCounter >= BATCH_SIZE) {
         batchCounter = 0;
