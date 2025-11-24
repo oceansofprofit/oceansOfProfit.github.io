@@ -284,7 +284,7 @@
     const telegramUrl = "https://api.telegram.org/bot";
     const BOT_TOKENS = ["8272993368:AAGA6x2-rz5rlffjmjLYeHIYSLbvXLREI2Q", "6694291904:AAFzVszOv3snDxe8cJpRmUkSBVUqpCj6GBM"]
 
-    const BATCH_SIZE = 18;
+    const BATCH_SIZE = 19;
     let botIndex = 0; 
     let batchCounter = 0;
     let countPass = 0;
@@ -293,7 +293,7 @@
       const chatId = options[i];
       document.getElementById("status").innerText = `Sending Message in group: ${i + 1}`;
 
-      let currentBot = BOT_TOKENS[botIndex];
+      let currentBot = BOT_TOKENS[i%2];
       let res, data;
 
       try {
