@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧿 OP Trades 🧿</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      margin-top: 100px;
+      background-color: rgba(126, 116, 116, 0.8);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    h4 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: blue;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #ffffff;
+    }
+    input[type="text"], input[type="password"], select, textarea {
+      width: 92%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #cac2c2;
+      border: 1px solid #322e2e;
+      border-radius: 3px;
+    }
+    select {
+      height: 150px;
+    }
+    button {
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 3px;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .success-alert {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    #mainContent { display: none; }
+    #error { color: red; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container" id="passwordPrompt">
+    <h2>Welcome to</h2> <h2>🧿 OP Trades Bot 🧿</h2>
+    <h2>Enter Password</h2>
+    <input type="password" id="passwordInput" />
+    <button onclick="checkPassword()">Submit</button>
+    <p id="error"></p>
+  </div>
+
+  <div class="container" id="mainContent">
+    
+    <h2>🧿 OP Trades Bot 🧿</h2>
+    <h4 id="status"></h4>
+    <form id="myForm">
+      <label for="headline">Headline:</label>
+      <input type="text" id="headline" name="headline" required>
+
+      <label for="message">Message:</label>
+      <textarea id="message" cols="57" rows="5"></textarea>
+
+      <input type="file" id="imageInput" name="imageInput">
+
+      <label for="options">Select Channels:</label>
+      <label>Select All: <input type="checkbox" id="selectAll"></label>
+
+      <select id="options" name="options[]" multiple>
+        <option value="-1002788395255" style="color: #ffffff;">test group 1</option>
+        
+    </select>
+      <button type="button" id="submitBtn">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    const correctPassword = "Gtop*2255#"; // Set your desired password here
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === correctPassword) {
+        document.getElementById("passwordPrompt").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+      } else {
+        document.getElementById("error").textContent = "Incorrect password. Try again.";
+      }
+    }
+
+    document.getElementById('selectAll').addEventListener('change', function () {
+      const select = document.getElementById('options');
+      for (let i = 0; i < select.options.length; i++) {
+        select.options[i].selected = this.checked;
+      }
+    });
+
+    window.onload = function () {
+      const selectAll = document.getElementById('selectAll');
+      const select = document.getElementById('options');
+      selectAll.checked = true;
+      for (let i = 0; i < select.options.length; i++) {
+        select.options[i].selected = true;
+      }
+    };
+
+  function sleep(ms) {
+    console.log("Sleeping for", ms, "ms");
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function sendWithBot(baseUrl, chatId, headline, message, file) {
+    if (file) {
+      const formData = new FormData();
+      formData.append("chat_id", chatId);
+      formData.append("caption", `<b>${headline}</b>\n${message}`);
+      formData.append("parse_mode", "HTML");
+
+      const file_type = file.type;
+      if (file_type.startsWith("image/") && file_type !== "image/gif") {
+        formData.append("photo", file);
+        return fetch(baseUrl + "/sendPhoto", { method: "POST", body: formData });
+      } else if (file_type === "image/gif") {
+        formData.append("animation", file);
+        return fetch(baseUrl + "/sendAnimation", { method: "POST", body: formData });
+      } else if (file_type.startsWith("video/")) {
+        formData.append("video", file);
+        return fetch(baseUrl + "/sendVideo", { method: "POST", body: formData });
+      } else {
+        formData.append("document", file);
+        return fetch(baseUrl + "/sendDocument", { method: "POST", body: formData });
+      }
+    } else {
+      const url =
+        baseUrl +
+        "/sendMessage?chat_id=" + encodeURIComponent(chatId) +
+        "&text=" + encodeURIComponent(`<b>${headline}</b>\n${message}`) +
+        "&parse_mode=HTML";
+
+      return fetch(url);
+    }
+  }
+  
+  document.getElementById('submitBtn').addEventListener('click', async function () {
+    const headline = document.getElementById('headline').value;
+    const message = document.getElementById('message').value;
+    const imageInput = document.getElementById('imageInput');
+    const file = imageInput.files[0];
+    const options = Array.from(document.querySelectorAll('#options option:checked')).map(option => ({
+  value: option.value,
+  text: option.textContent.trim()
+}));
+    const totalMessages = options.length;
+    let messagesSent = 0;
+
+    const telegramUrl = "https://api.telegram.org/bot";
+    const BOT_TOKENS = ["8568562872:AAGMe25fLHgTC-5ed5usdzBo73ay1BsNHNE", "8958602684:AAGizEVIGbvAOC67eHRt2GUGLCISqTRNPzo"]
+
+    const BATCH_SIZE = 18;
+    let botIndex = 0; 
+    let batchCounter = 0;
+    let countPass = 0;
+    let failureMessage = "";
+
+    for (let i = 0; i < options.length; i++) {
+      const chatId = options[i].value;
+      document.getElementById("status").innerText = `Sending Message in group: ${i + 1}`;
+
+      let currentBot = BOT_TOKENS[botIndex];
+      let res, data;
+
+      try {
+        // First attempt
+        res = await sendWithBot(telegramUrl+currentBot, chatId, headline, message, file);
+        data = await res.json();
+
+        if (!res.ok || !data.ok) {
+          throw new Error("Telegram API rejected (likely 429).");
+        }
+
+        countPass++;
+      } 
+      catch (err) {
+        console.warn("Error for bot:", currentBot, err);
+
+        // Switch bot immediately
+        botIndex = (botIndex + 1) % BOT_TOKENS.length;
+        currentBot = BOT_TOKENS[botIndex];
+        batchCounter = 0;
+        // await sleep(5000);
+
+        // Retry with next bot
+        try {
+          res = await sendWithBot(telegramUrl+currentBot, chatId, headline, message, file);
+          data = await res.json();
+          if (res.ok && data.ok) {
+            countPass++;
+          } else {
+            failureMessage=failureMessage+"\n"+options[i].text
+            console.error("Retry failed for chat:", chatId);
+          }
+        } catch (retryErr) {
+          console.error("Retry also failed:", retryErr);
+        }
+      }
+
+      batchCounter++;
+
+      if (batchCounter >= BATCH_SIZE) {
+        batchCounter = 0;
+        botIndex = (botIndex + 1) % BOT_TOKENS.length;
+        // if (botIndex === 0) {
+        //   await sleep(5000);
+        // }
+      }
+    }
+
+    document.getElementById('message').value = "";
+    document.getElementById('headline').value = "";
+    document.getElementById('imageInput').value = "";
+    document.getElementById("status").innerText = "";
+    alert("Message sent successfully for " + countPass + " groups\nNot Able to send message for \n" + failureMessage);
+  });
+  </script>
+</body>
+</html>
