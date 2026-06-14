@@ -104,7 +104,6 @@
         <option value="-1003991400274" style="color: #ffffff;">4. OP TRADES🧿 .... ..</option>
         <option value="-1003756408083" style="color: #ffffff;">5. OP TRADES🧿 .... .</option>
         
-        
         <option value="-1003314217714" style="color: #ffffff;">6. OP TRADES🧿 ... ...</option>
         <option value="-1003736287289" style="color: #ffffff;">7. OP TRADES🧿 ... ..</option>
         <option value="-1003887507948" style="color: #ffffff;">8. OP TRADES🧿 ... .</option>
@@ -122,7 +121,7 @@
         <option value="-1004449509007" style="color: #ffffff;">18. OP TRADES🧿 ..... ....</option>
         <option value="-1004297815919" style="color: #ffffff;">19. OP TRADES🧿 ..... ...</option>
         <option value="-1003618782527" style="color: #ffffff;">20. OP TRADES🧿 ..... ..</option>
-<!-- 
+      <!-- 
         <option value="" style="color: #ffffff;">21. </option>
         <option value="" style="color: #ffffff;">22. </option>
         <option value="" style="color: #ffffff;">23. </option>
@@ -133,7 +132,8 @@
         <option value="" style="color: #ffffff;">27. </option>
         <option value="" style="color: #ffffff;">28. </option>
         <option value="" style="color: #ffffff;">29. </option>
-        <option value="" style="color: #ffffff;">30. </option> -->
+        <option value="" style="color: #ffffff;">30. </option> 
+        -->
         
     </select>
       <button type="button" id="submitBtn">Submit</button>
@@ -141,15 +141,23 @@
   </div>
 
   <script>
-    const correctPassword = "Gtop*2255#"; // Set your desired password here
+    const correctPassword = "Gtop*2255#";
 
     function checkPassword() {
+
       const input = document.getElementById("passwordInput").value;
-      if (input === correctPassword) {
+
+      if(input === correctPassword){
+
+        localStorage.setItem("authenticated","true");
+
         document.getElementById("passwordPrompt").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
+
       } else {
-        document.getElementById("error").textContent = "Incorrect password. Try again.";
+
+        document.getElementById("error").textContent =
+            "Incorrect password. Try again.";
       }
     }
 
@@ -160,11 +168,20 @@
       }
     });
 
-    window.onload = function () {
+    window.onload = function(){
+
+      if(localStorage.getItem("authenticated")==="true"){
+
+        document.getElementById("passwordPrompt").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+      }
+
       const selectAll = document.getElementById('selectAll');
       const select = document.getElementById('options');
+
       selectAll.checked = true;
-      for (let i = 0; i < select.options.length; i++) {
+
+      for(let i=0;i<select.options.length;i++){
         select.options[i].selected = true;
       }
     };
